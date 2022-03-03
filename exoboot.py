@@ -89,12 +89,12 @@ class Exo():
             print('Exo obj created but no exoboot connected. Some methods available')
         elif self.dev_id in constants.LEFT_EXO_DEV_IDS:
             self.side = constants.Side.LEFT
-            self.motor_sign = -1
+            self.motor_sign = 1
             self.ankle_to_motor_angle_polynomial = constants.LEFT_ANKLE_TO_MOTOR
             self.ankle_angle_offset = constants.LEFT_ANKLE_ANGLE_OFFSET
         elif self.dev_id in constants.RIGHT_EXO_DEV_IDS:
             self.side = constants.Side.RIGHT
-            self.motor_sign = 1
+            self.motor_sign = -1
             self.ankle_to_motor_angle_polynomial = constants.RIGHT_ANKLE_TO_MOTOR
             self.ankle_angle_offset = constants.RIGHT_ANKLE_ANGLE_OFFSET
         else:
@@ -237,7 +237,7 @@ class Exo():
         actpack_data = fxs.read_device(self.dev_id)
 
         # Check to see if values are reasonable
-        ankle_angle_temp = (-1 * self.motor_sign * actpack_data.ank_ang *
+        ankle_angle_temp = (1 * self.motor_sign * actpack_data.ank_ang *
                             constants.ENC_CLICKS_TO_DEG + self.ankle_angle_offset)
         if ankle_angle_temp > constants.MAX_ANKLE_ANGLE or ankle_angle_temp < constants.MIN_ANKLE_ANGLE:
             print('Bad packet caught on side: ', self.side, 'ankle_angle: ', ankle_angle_temp,
@@ -246,14 +246,17 @@ class Exo():
         self.data.ankle_angle = ankle_angle_temp
         self.data.state_time = actpack_data.state_time * constants.MS_TO_SECONDS
         self.data.temperature = actpack_data.temperature
+
         self.data.accel_x = -1 * self.motor_sign * \
             actpack_data.accelx * constants.ACCEL_GAIN
         self.data.accel_y = -1 * actpack_data.accely * constants.ACCEL_GAIN
-        self.data.accel_z = actpack_data.accelz * constants.ACCEL_GAIN
-        self.data.gyro_x = -1 * actpack_data.gyrox * constants.GYRO_GAIN
-        self.data.gyro_y = -1 * self.motor_sign * \
+        self.data.accel_z = -1* actpack_data.accelz * constants.ACCEL_GAIN
+        self.data.gyro_x = 1 * actpack_data.gyrox * constants.GYRO_GAIN
+        self.data.gyro_y = 1 * self.motor_sign * \
             actpack_data.gyroy * constants.GYRO_GAIN
-        self.data.gyro_z = self.motor_sign * actpack_data.gyroz * constants.GYRO_GAIN
+        self.data.gyro_z = 1* self.motor_sign * actpack_data.gyroz * constants.GYRO_GAIN
+  
+
         '''Motor angle and current are kept in Dephy's orientation, but ankle
         angle and torque are converted to positive = plantarflexion.'''
         self.data.motor_angle = actpack_data.mot_ang
@@ -331,7 +334,8 @@ class Exo():
             self.my_file.close()
 
     def command_current(self, desired_mA: int):
-        '''Commands current (mA), with positive = PF on right, DF on left.'''
+        '''Commands current (mA), with positive = DF on right, PF on left.
+        DIFFERENT FROM OLD BOOTS'''
         if abs(desired_mA) > self.max_allowable_current:
             self.command_controller_off()
             raise ValueError(
@@ -342,7 +346,8 @@ class Exo():
         self.data.commanded_position = None
 
     def command_voltage(self, desired_mV: int):
-        '''Commands voltage (mV), with positive = PF on right, DF on left.'''
+        '''Commands voltage (mV), with positive = DF on right, PF on left.
+        DIFFEENT FROM OLD BOOTS'''
         if abs(desired_mV) > constants.MAX_ALLOWABLE_VOLTAGE_COMMAND:
             raise ValueError(
                 'abs(desired_mV) must be < constants.MAX_ALLOWABLE_VOLTAGE_COMMAND')
@@ -377,10 +382,11 @@ class Exo():
         self.data.commanded_current = None
         self.data.commanded_position = None
         self.data.commanded_torque = None
-
+        # print("commanding motor impedance")
     def command_torque(self, desired_torque: float, do_return_command_torque=False, do_ease_torque_off=True):
         '''Applies desired torque (Nm) in plantarflexion only (positive torque)'''
         self.data.commanded_torque = desired_torque  # TODO(maxshep) remove
+        # print("commanding torque")
         if desired_torque < 0:
             print('desired_torque: ', desired_torque)
             raise ValueError('Cannot apply negative torques')
@@ -417,6 +423,7 @@ class Exo():
         theta0_motor = self.ankle_angle_to_motor_angle(theta0_ankle)
         K_dephy = K_ankle / constants.DEPHY_K_TO_ANKLE_K
         # B_dephy = B_ankle / constants.DEPHY_B_TO_ANKLE_B
+        # print("commanding ankle impedance")
         self.command_motor_impedance(
             theta0=theta0_motor, k_val=K_dephy, b_val=0)
 

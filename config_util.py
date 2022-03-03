@@ -124,7 +124,7 @@ def load_config(config_filename) -> Type[ConfigurableConstants]:
         if config_filename.endswith('_config'):
             config_filename = config_filename[:-7]
         elif config_filename.endswith('_config.py'):
-            config_filename = config_filename[:-11]
+            config_filename = config_filename[:-10]
         elif config_filename.endswith('.py'):
             config_filename = config_filename[:-4]
         config_filename = config_filename + '_config'

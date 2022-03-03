@@ -9,23 +9,23 @@ MIN_ANKLE_ANGLE = -63  # -60  # degrees, dorsiflexion
 
 # These polynomials are derived from the calibration routine (calibrate.py), analyzed with transmission_analysis.py
 LEFT_ANKLE_TO_MOTOR = np.array(
-    [-8.92089947e-06, 6.54524084e-04, 9.47872779e-02, 5.97822436e-01,
-     -7.61045898e+02, 1.06551671e+04])
+    [4.93809841e-06, -9.37236976e-04, -1.91799432e-02,  1.49927256e+00,
+    5.50444115e+02,  1.48885144e+04])
 # [-7.46848531e-06,  6.16855504e-04,  7.54072228e-02,  7.50135291e-01,
 #  -7.03196238e+02, -3.95156221e+04])
 RIGHT_ANKLE_TO_MOTOR = np.array(
-    [6.53412109e-06, -5.10000261e-04, -7.52460274e-02, -1.27584877e+00,
-     7.05016223e+02, -1.09811413e+04])
+    [-7.58737033e-06,  1.26704441e-03,  1.43450629e-02, -2.14108179e+00,
+    -5.47623518e+02,  9.62346598e+03])
 # These points are used to create a Pchip spline, which defines the transmission ratio as a function of ankle angle
-ANKLE_PTS = np.array([-60, -40, 0, 10, 20, 30, 40, 45.6, 55, 80])  # Deg
-TR_PTS = np.array([16, 16, 15, 14.5, 14, 11.5, 5, 0, -6.5, -12])  # Nm/Nm
+ANKLE_PTS = np.array([-60, -30, -20, 0, 15, 30, 40, 45.6, 55, 80])  # Deg
+TR_PTS = -1* np.array([-23, -11.5, -11, -12,-12.5, -12, -10, -8, -3, 9])  # Nm/Nm
 
-LEFT_ANKLE_ANGLE_OFFSET = -92  # deg
-RIGHT_ANKLE_ANGLE_OFFSET = 88  # deg
+LEFT_ANKLE_ANGLE_OFFSET = -89.25  # deg
+RIGHT_ANKLE_ANGLE_OFFSET = 91.5  # deg
 
 # Add to these lists if dev_ids change, or new exos or actpacks are purchased!
-RIGHT_EXO_DEV_IDS = [65295, 3148]
-LEFT_EXO_DEV_IDS = [63086, 2873]
+RIGHT_EXO_DEV_IDS = [65295, 3148, 4648]
+LEFT_EXO_DEV_IDS = [63086, 2873, 4632]
 
 MS_TO_SECONDS = 0.001
 # Converts raw Dephy encoder output to degrees
@@ -42,7 +42,7 @@ MOTOR_CURRENT_TO_MOTOR_TORQUE = 0.000146  # mA to Nm
 DEPHY_VEL_TO_MOTOR_VEL = 0.025*ENC_CLICKS_TO_DEG
 
 # ankle_torque ~ AVERAGE_TRANSMISSION_RATIO*motor_torque
-AVERAGE_TRANSMISSION_RATIO = 14  # Used to roughly map motor to ankle impedance
+AVERAGE_TRANSMISSION_RATIO = 12  # Used to roughly map motor to ankle impedance
 
 # https://dephy.com/wiki/flexsea/doku.php?id=controlgains
 DEPHY_K_CONSTANT = 0.00078125

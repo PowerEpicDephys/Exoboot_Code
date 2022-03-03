@@ -6,22 +6,24 @@ from scipy import signal
 from scipy import interpolate
 
 LEFT_ANKLE_TO_MOTOR = np.array(
-    [-7.46848531e-06,  6.16855504e-04,  7.54072228e-02,  7.50135291e-01,
-     -7.03196238e+02, -3.95156221e+04])
+    [4.93809841e-06, -9.37236976e-04, -1.91799432e-02,  1.49927256e+00,
+    5.50444115e+02,  1.48885144e+04])
 RIGHT_ANKLE_TO_MOTOR = np.array(
-    [6.53412109e-06, -5.10000261e-04, -7.52460274e-02, -1.27584877e+00,
-     7.05016223e+02, -1.09811413e+04])
+    [-7.58737033e-06,  1.26704441e-03,  1.43450629e-02, -2.14108179e+00,
+    -5.47623518e+02,  9.62346598e+03]
+)
 
 folder = 'calibration_files/'
-for filename in ["20210619_0005_calibration2_LEFT.csv"]:
-    # filename = "20210616_1945_calibration2_RIGHT.csv"
+for filename in ["20220228_2140__RIGHT.csv"]:
+    # filename = "20220228_2138__LEFT.csv" #"20220225_1314__LEFT.csv"
     with open(folder + filename) as f:
         motor_angle = [int(row["motor_angle"])
                        for row in csv.DictReader(f)]
     with open(folder + filename) as f:
         ankle_angle = [np.floor(float(row["ankle_angle"]))
                        for row in csv.DictReader(f)]
-    motor_angle = np.array(motor_angle)*constants.ENC_CLICKS_TO_DEG
+    ankle_angle = np.array(ankle_angle)[5:] 
+    motor_angle = np.array(motor_angle)[5:]*constants.ENC_CLICKS_TO_DEG
 
     plt.figure(1)
     plt.xlabel('ankle angle')
@@ -52,28 +54,35 @@ for filename in ["20210619_0005_calibration2_LEFT.csv"]:
     polyfitted_left_motor_angle = np.polyval(p, ankle_angle)
     plt.plot(ankle_angle, polyfitted_left_motor_angle)
 
-    pcurrent = LEFT_ANKLE_TO_MOTOR
+    pcurrent = RIGHT_ANKLE_TO_MOTOR
     polyfitted_left_motor_angle = np.polyval(pcurrent, ankle_angle)
     plt.plot(ankle_angle, polyfitted_left_motor_angle, linestyle='dashed')
 
     plt.figure(2)
     p_deriv = np.polyder(p)
     TR_from_polyfit = np.polyval(p_deriv, ankle_angle)
-    # plt.plot(ankle_angle, -TR_from_polyfit)
+    plt.plot(ankle_angle, -TR_from_polyfit*constants.ENC_CLICKS_TO_DEG)
 
     p = np.polyfit(ankle_angle, TR, deg=4)
     deriv_left2 = np.polyval(p, ankle_angle)
 
-    # plt.plot(ankle_angle, -TR)
+    plt.plot(ankle_angle, -TR)
 
-    ankle_pts = [-60, -40, 0, 10, 20, 30, 40, 45.6, 55, 80]
-    deriv_pts = [16, 16, 15, 14.5, 14, 11.5, 5, 0, -6.5, -12]
+    ankle_pts = [-60, -30, -20, 0, 15, 30, 40, 45.6, 55, 80]
+    deriv_pts = [-23, -11.5, -11, -12,-12.5, -12, -10, -8, -3, 9]
 
+    # ANKLE_PTS = np.array([-60, -40, 0, 10, 20, 30, 40, 45.6, 55, 80])  # Deg
+    # TR_PTS = np.array([16, 16, 15, 14.5, 14, 11.5, 5, 0, -6.5, -12])  # Nm/Nm
+    
     deriv_spline_fit = interpolate.pchip_interpolate(
         ankle_pts, deriv_pts, ankle_angle)
-    plt.plot(ankle_angle, deriv_spline_fit, linewidth=5)
-    plt.xlim([-50, 80])
-    plt.ylim([-22, 22])
+    plt.plot(ankle_angle, -1* deriv_spline_fit, linewidth=5)
+
+    # deriv_spline_fit_2 = interpolate.pchip_interpolate(
+    #     ANKLE_PTS, TR_PTS, ankle_angle)
+    # plt.plot(ankle_angle, deriv_spline_fit_2, linewidth=5)
+    # plt.xlim([-50, 80])
+    # plt.ylim([-22, 22])
     plt.ylabel('Transmission Ratio')
     plt.xlabel('Ankle Angle')
 

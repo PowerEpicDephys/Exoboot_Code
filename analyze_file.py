@@ -9,8 +9,8 @@ from scipy import signal
 import filters
 
 folder = 'exo_data/'
-filename = "20211130_1141_m1_LEFT.csv"
-
+filename = "20220301_1042_linds_RIGHT.csv"
+# filename = "20220114_1224_SSWS3600_RIGHT.csv"
 df = pd.read_csv(folder + '/' + filename, usecols=np.arange(23))
 # df = pd.read_csv(folder + '/' + filename, usecols=np.arange(22))
 
@@ -37,19 +37,19 @@ print(gait_phase_filt)
 
 
 # plt.plot(df.loop_time, df.ankle_torque_from_current, 'y-')
-plt.plot(df.loop_time, 0.1*df.commanded_torque, 'y-')
+# plt.plot(df.loop_time, 0.1*df.commanded_torque, 'y-')
 
-# plt.plot(df.loop_time, df.ankle_angle, 'g-')
-plt.plot(df.loop_time, -1.2*df.did_heel_strike, 'r-')
-plt.plot(df.loop_time, df.gait_phase, 'k-')
-plt.plot(df.loop_time, -1*df.did_toe_off, 'b-')
-plt.plot(df.loop_time, 0.9*np.ones_like(df.loop_time), 'k:')
+plt.plot(df.loop_time, df.ankle_angle, 'g-')
+# plt.plot(df.loop_time, -1.2*df.did_heel_strike, 'r-')
+# plt.plot(df.loop_time, df.gait_phase, 'k-')
+# plt.plot(df.loop_time, -1*df.did_toe_off, 'b-')
+# plt.plot(df.loop_time, 0.9*np.ones_like(df.loop_time), 'k:')
 # plt.plot(df.loop_time, filtered_ankle_angle, 'b--')
 
 # plt.plot(df.loop_time, df.gen_var1, 'b-')
 # plt.plot(df.loop_time, df.gen_var2, 'k-')
 # plt.plot(df.loop_time, df.gen_var3, 'r-')
-# plt.plot(df.loop_time, 0.001*df.slack, 'g--')
+plt.plot(df.loop_time, 0.001*df.slack, 'b--')
 # plt.plot(df.loop_time, df.did_slip)
 # plt.plot(df.loop_time, 0.001*df.commanded_current, 'r-')
 # plt.plot(df.loop_time, df.ankle_torque_from_current, 'm--')
@@ -64,7 +64,7 @@ plt.plot(df.loop_time, 0.9*np.ones_like(df.loop_time), 'k:')
 
 # plt.plot(df.loop_time, df.did_heel_strike)
 
-# plt.plot(df.loop_time, 0.001*df.motor_current, 'm.-')
+plt.plot(df.loop_time, 0.001*df.motor_current, 'm.-')
 # plt.plot(df.loop_time, df.ankle_angle)
 # plt.plot(df.loop_time, df.accel_x)
 # plt.plot(df.loop_time, df.accel_y)

@@ -5,6 +5,7 @@ import time
 import csv
 import util
 import constants
+import config_util
 
 
 def calibrate_encoder_to_ankle_conversion(exo: exoboot.Exo):
@@ -12,7 +13,11 @@ def calibrate_encoder_to_ankle_conversion(exo: exoboot.Exo):
     between ankle and motor angles. Move through the full RoM!!!'''
     exo.update_gains(Kp=constants.DEFAULT_KP, Ki=constants.DEFAULT_KI,
                      Kd=constants.DEFAULT_KD, ff=constants.DEFAULT_FF)
-    exo.command_current(exo.motor_sign*2000)
+    exo.standing_calibration()
+
+    exo.update_gains(Kp=constants.DEFAULT_KP, Ki=constants.DEFAULT_KI,
+                     Kd=constants.DEFAULT_KD, ff=constants.DEFAULT_FF)
+    exo.command_current(exo.motor_sign*1500)
     print('begin!')
     for _ in range(1000):
         time.sleep(0.02)
@@ -22,10 +27,18 @@ def calibrate_encoder_to_ankle_conversion(exo: exoboot.Exo):
 
 
 if __name__ == '__main__':
-    exo_list = exoboot.connect_to_exos(file_ID='calibration2')
-    if len(exo_list) > 1:
-        raise ValueError("Just turn on one exo for calibration")
+    config = config_util.load_config_from_args()  # loads config from passed args
+    file_ID = input(
+        'Other than the date, what would you like added to the filename?')
+
+    '''if sync signal is used, this will be gpiozero object shared between exos.'''
+    sync_detector = config_util.get_sync_detector(config)
+
+    '''Connect to Exos, instantiate Exo objects.'''
+    exo_list = exoboot.connect_to_exos(
+        file_ID=file_ID, config=config, sync_detector=sync_detector)
+    print('Battery Voltage: ', 0.001*exo_list[0].get_batt_voltage(), 'V')
+
     exo = exo_list[0]
-    exo.standing_calibration()
     calibrate_encoder_to_ankle_conversion(exo=exo)
     exo.close()
