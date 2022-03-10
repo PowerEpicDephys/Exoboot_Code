@@ -88,8 +88,8 @@ class SawickiWickiController(Controller):
             # super().command_gains()
             # print('engaged..., desired k_val: ', self.k_val,
             #       'setpoint: ', self.ankle_angles[0])
-            self.exo.command_motor_impedance(
-                theta0=self.theta0_motor, k_val=self.k_val, b_val=self.b_val)
+            self.exo.command_ankle_impedance(
+                theta0_ankle=self.theta0_motor, K_ankle=self.k_val, B_ankle=self.b_val)
             self.exo.data.gen_var1 = 6
 
         else:
@@ -105,7 +105,7 @@ class SawickiWickiController(Controller):
         if theta0 > constants.MAX_ANKLE_ANGLE or theta0 < constants.MIN_ANKLE_ANGLE:
             raise ValueError(
                 'Attempted to command a set point outside the range of motion')
-        self.theta0_motor = self.exo.ankle_angle_to_motor_angle(theta0)
+        self.theta0_motor = theta0 #self.exo.ankle_angle_to_motor_angle(theta0)
 
     def update_ctrl_params_from_config(self, config: Type[config_util.ConfigurableConstants]):
         'Updates controller parameters from the config object.'''

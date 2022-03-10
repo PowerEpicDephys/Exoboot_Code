@@ -18,7 +18,7 @@ RIGHT_ANKLE_TO_MOTOR = np.array(
     -5.47623518e+02,  9.62346598e+03])
 # These points are used to create a Pchip spline, which defines the transmission ratio as a function of ankle angle
 ANKLE_PTS = np.array([-60, -30, -20, 0, 15, 30, 40, 45.6, 55, 80])  # Deg
-TR_PTS = -1* np.array([-23, -11.5, -11, -12,-12.5, -12, -10, -8, -3, 9])  # Nm/Nm
+TR_PTS = np.array([23, 11.5, 11, 12,12.5, 12, 10, 8, 3, -9])  # Nm/Nm
 
 LEFT_ANKLE_ANGLE_OFFSET = -89.25  # deg
 RIGHT_ANKLE_ANGLE_OFFSET = 91.5  # deg
@@ -42,14 +42,13 @@ MOTOR_CURRENT_TO_MOTOR_TORQUE = 0.000146  # mA to Nm
 DEPHY_VEL_TO_MOTOR_VEL = 0.025*ENC_CLICKS_TO_DEG
 
 # ankle_torque ~ AVERAGE_TRANSMISSION_RATIO*motor_torque
-AVERAGE_TRANSMISSION_RATIO = 12  # Used to roughly map motor to ankle impedance
+AVERAGE_TRANSMISSION_RATIO = 12.5  # Used to roughly map motor to ankle impedance
 
 # https://dephy.com/wiki/flexsea/doku.php?id=controlgains
 DEPHY_K_CONSTANT = 0.00078125
-DEPHY_B_CONSTANT = 0.0000625
+DEPHY_B_CONSTANT = 0.0002844
 # Multiply Dephy's k_val by this to get a motor stiffness in Nm/deg
-DEPHY_K_TO_MOTOR_K = MOTOR_CURRENT_TO_MOTOR_TORQUE / (ENC_CLICKS_TO_DEG *
-                                                      DEPHY_K_CONSTANT)
+DEPHY_K_TO_MOTOR_K = MOTOR_CURRENT_TO_MOTOR_TORQUE *DEPHY_K_CONSTANT / (ENC_CLICKS_TO_DEG )
 # Multiply Dephy's k_val by this to get an estimate of ankle stiffness in Nm/deg
 DEPHY_K_TO_ANKLE_K = AVERAGE_TRANSMISSION_RATIO**2 * DEPHY_K_TO_MOTOR_K
 

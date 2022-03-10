@@ -424,6 +424,7 @@ class Exo():
         K_dephy = K_ankle / constants.DEPHY_K_TO_ANKLE_K
         # B_dephy = B_ankle / constants.DEPHY_B_TO_ANKLE_B
         # print("commanding ankle impedance")
+        print(K_ankle,K_dephy)
         self.command_motor_impedance(
             theta0=theta0_motor, k_val=K_dephy, b_val=0)
 

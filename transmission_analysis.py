@@ -61,12 +61,12 @@ for filename in ["20220228_2140__RIGHT.csv"]:
     plt.figure(2)
     p_deriv = np.polyder(p)
     TR_from_polyfit = np.polyval(p_deriv, ankle_angle)
-    plt.plot(ankle_angle, -TR_from_polyfit*constants.ENC_CLICKS_TO_DEG)
+    plt.plot(ankle_angle, TR_from_polyfit*constants.ENC_CLICKS_TO_DEG)
 
     p = np.polyfit(ankle_angle, TR, deg=4)
     deriv_left2 = np.polyval(p, ankle_angle)
 
-    plt.plot(ankle_angle, -TR)
+    plt.plot(ankle_angle, TR)
 
     ankle_pts = [-60, -30, -20, 0, 15, 30, 40, 45.6, 55, 80]
     deriv_pts = [-23, -11.5, -11, -12,-12.5, -12, -10, -8, -3, 9]
@@ -76,7 +76,7 @@ for filename in ["20220228_2140__RIGHT.csv"]:
     
     deriv_spline_fit = interpolate.pchip_interpolate(
         ankle_pts, deriv_pts, ankle_angle)
-    plt.plot(ankle_angle, -1* deriv_spline_fit, linewidth=5)
+    plt.plot(ankle_angle, deriv_spline_fit, linewidth=5)
 
     # deriv_spline_fit_2 = interpolate.pchip_interpolate(
     #     ANKLE_PTS, TR_PTS, ankle_angle)
