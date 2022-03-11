@@ -1,3 +1,7 @@
+## Notes on transfer New EB60 Dephy Exoboots
+1) For the most part, frontend control of the new boots remains the same. Only differences surrounding the impedance controller due to a different transmission ratio profile for the ankle torque/angle on the new boots. Please double check K stiffness values used and ALWAYS START LOW, because the values used on the old boots don't transfer directly to the new ones.
+2) Some sign convention changes for the motors and IMUs are taken into account in exo.py, so **this Exoboot_Code repo WILL NOT WORK properly on the old exoboots** 
+
 ## Notes on working with the Dephy exoboots:
 This code works with Dephy's exoboots. There are a couple pains that make this code a little more complicated: 1) it's a unidirectional actuator, so managing slack is important when you want zero torque, 2) The actpacks don't know they are part of an ankle, so raw imu, current, and angle data for left/right are flipped different directions, 3) The transmission ratio is variable, and even flips to negative around 30 deg plantarflexion, 4) both the ankle and motor use absolute encoders, but the motor spins more than 10 times through the RoM, so it doesn't know where it is within that RoM when you first turn it on, so requires calibration every time it's turned on. As such, some decisions were made and functions implemented:
 
