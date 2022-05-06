@@ -174,6 +174,10 @@ class Exo():
         gen_var1: float = field(init=False)
         gen_var2: float = field(init=False)
         gen_var3: float = field(init=False)
+        # status_mn: float = 0
+        status_ex: float = 0
+        # status_re: float = 0
+
 
         def __post_init__(self, do_include_FSRs, do_include_sync, do_include_did_slip, do_include_gen_vars):
             # Important! The order of these args need to match their order as InitVars above
@@ -264,6 +268,10 @@ class Exo():
         self.data.motor_current = actpack_data.mot_cur
         self.data.ankle_torque_from_current = self._motor_current_to_ankle_torque(
             self.data.motor_current)
+        
+        self.data.status_ex = actpack_data.status_ex
+        # self.data.status_mn = actpack_data.status_mn
+        # self.data.status_re = actpack_data.status_re
 
         if self.has_calibrated:
             self.data.slack = self.get_slack()
@@ -421,10 +429,14 @@ class Exo():
 
     def command_ankle_impedance(self, theta0_ankle: float, K_ankle: float, B_ankle: float = 0):
         theta0_motor = self.ankle_angle_to_motor_angle(theta0_ankle)
-        K_dephy = K_ankle / constants.DEPHY_K_TO_ANKLE_K
+        # K_dephy = K_ankle *(np.pi/180) / constants.DEPHY_K_TO_ANKLE_K
+        
+        K_dephy = K_ankle *(np.pi/180) / (self.TR_from_ankle_angle(self.data.ankle_angle)**2 * constants.DEPHY_K_TO_MOTOR_K)
+
+        
         # B_dephy = B_ankle / constants.DEPHY_B_TO_ANKLE_B
         # print("commanding ankle impedance")
-        print(K_ankle,K_dephy)
+        # print(K_ankle,K_dephy)
         self.command_motor_impedance(
             theta0=theta0_motor, k_val=K_dephy, b_val=0)
 

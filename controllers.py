@@ -76,6 +76,7 @@ class SawickiWickiController(Controller):
 
         if self.found_setpt is False:
             # TODO(maxshep) see if you want to change min val
+            #finding the pf peak
             if len(self.ankle_angles) == 5 and (self.ankle_angles[1] > self.ankle_angles[0] and
                                                 self.ankle_angles[1] > self.ankle_angles[2]) and (
                     self.ankle_angles[0] > 5):
@@ -84,7 +85,7 @@ class SawickiWickiController(Controller):
                 self._update_setpoint(theta0=self.ankle_angles[1])
 
         if self.is_taught and self.found_setpt:
-            self.exo.update_gains(Kp=20, Ki=200, Kd=0, ff=60)
+            self.exo.update_gains(Kp=40, Ki=400, Kd=0, ff=40)  #Mod and test AMRO
             # super().command_gains()
             # print('engaged..., desired k_val: ', self.k_val,
             #       'setpoint: ', self.ankle_angles[0])

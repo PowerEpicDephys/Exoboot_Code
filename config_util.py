@@ -50,7 +50,7 @@ class ConfigurableConstants():
 
     TASK: Type[Task] = Task.WALKING
     STANCE_CONTROL_STYLE: Type[StanceCtrlStyle] = StanceCtrlStyle.FOURPOINTSPLINE
-    MAX_ALLOWABLE_CURRENT = 20000  # mA
+    MAX_ALLOWABLE_CURRENT = 23000  # mA
 
     # Gait State details
     HS_GYRO_THRESHOLD: float = 100
