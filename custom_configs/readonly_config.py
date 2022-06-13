@@ -3,6 +3,7 @@ import config_util
 config = config_util.ConfigurableConstants()
 config.READ_ONLY = True  # For example
 config.VARS_TO_PLOT = ['accel_x', 'accel_y']
+config.DO_READ_SYNC = True
 
 
 ''' Here are the variables that are updatable in config, and their defaults:
