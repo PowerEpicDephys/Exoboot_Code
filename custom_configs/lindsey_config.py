@@ -4,7 +4,7 @@ config = config_util.ConfigurableConstants()
 '''Make your modifications starting here'''
 config.TASK = config_util.Task.WALKING
 config.STANCE_CONTROL_STYLE = config_util.StanceCtrlStyle.SAWICKIWICKI
-config.K_VAL = 1
+config.K_VAL = 50
 config.HS_GYRO_DELAY = 0
 config.HS_GYRO_FILTER_WN = 5
 
@@ -13,7 +13,7 @@ config.TOE_OFF_FRACTION = 0.73
 config.REEL_IN_TIMEOUT = 0.05  # 0.2
 config.SWING_SLACK = 3500  # 5000
 config.REEL_IN_SLACK_CUTOFF = 1000
-config.B_VAL = .5  # 2000 helped
+config.B_VAL = 0  # 2000 helped
 config.DO_INCLUDE_GEN_VARS = True
 config.REEL_IN_MV = 1500
 # config.DO_READ_SYNC = True

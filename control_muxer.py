@@ -56,7 +56,7 @@ def get_gse_and_sm_lists(exo_list, config: Type[config_util.ConfigurableConstant
                     bias_torque=config.SPLINE_BIAS)
             elif config.STANCE_CONTROL_STYLE == config_util.StanceCtrlStyle.SAWICKIWICKI:
                 reel_out_controller = controllers.SoftReelOutController(
-                    exo=exo, desired_slack=8000, force_timer_to_complete=True)
+                    exo=exo, desired_slack=config.SWING_SLACK)#, force_timer_to_complete=True)
                 stance_controller = controllers.SawickiWickiController(
                     exo=exo, k_val=config.K_VAL, b_val=config.B_VAL)
             state_machine = state_machines.StanceSwingReeloutReelinStateMachine(exo=exo,

@@ -85,7 +85,7 @@ class SawickiWickiController(Controller):
                 self._update_setpoint(theta0=self.ankle_angles[1])
 
         if self.is_taught and self.found_setpt:
-            self.exo.update_gains(Kp=40, Ki=400, Kd=0, ff=40)  #Mod and test AMRO
+            self.exo.update_gains(Kp=250, Ki=500, Kd=0, ff=110)  #Mod and test AMRO
             # super().command_gains()
             # print('engaged..., desired k_val: ', self.k_val,
             #       'setpoint: ', self.ankle_angles[0])
@@ -268,7 +268,7 @@ class FourPointSplineController(GenericSplineController):
 class SmoothReelInController(Controller):
     def __init__(self,
                  exo: Exo,
-                 reel_in_mV: int = 1200,
+                 reel_in_mV: int = 1500,
                  slack_cutoff: float = 1500,
                  time_out: float = 0.3,
                  Kp: int = 30,  # 50  150
@@ -299,7 +299,7 @@ class SmoothReelInController(Controller):
             desired_mV=self.exo.motor_sign * self.reel_in_mV)
 
     def check_completion_status(self):
-        if self.delay_timer.check() or self.exo.get_slack() < self.slack_cutoff:
+        if self.delay_timer.check() or self.exo.get_slack() <= self.slack_cutoff:
             self.delay_timer.reset()
             return True
         else:
@@ -356,6 +356,9 @@ class SoftReelOutController(Controller):
                  force_timer_to_complete: bool = False):
         '''This controller uses position control with low gains to reach the desired slack.'''
         self.exo = exo
+        self.ankle_angles = deque(maxlen=3)  # looking for peak in pf
+        self.ankle_angle_filter = filters.Butterworth(N=2, Wn=0.1)
+        
         super().update_controller_gains(Kp=Kp, Ki=Ki, Kd=Kd, ff=ff)
         self.desired_slack = desired_slack
         # set maximum time for controller
@@ -366,12 +369,15 @@ class SoftReelOutController(Controller):
         if reset:
             super().command_gains()
             self.delay_timer.start()
+            self.ankle_angles.clear()  # Reset the ankle angle deque
+            self.ankle_angle_filter.restart()  # Reset the filter
         self.exo.command_slack(desired_slack=self.desired_slack)
 
     def check_completion_status(self):
         slack = self.exo.get_slack()
+        ontheup = len(self.ankle_angles) == 3 and (self.ankle_angles[1] > self.ankle_angles[0])
         return (not self.force_timer_to_complete and
-                slack > self.desired_slack-500) or self.delay_timer.check()
+                slack >= self.desired_slack-500 and ontheup) or self.delay_timer.check()
 
 
 class GenericImpedanceController(Controller):
