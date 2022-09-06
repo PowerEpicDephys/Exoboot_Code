@@ -53,7 +53,7 @@ class SawickiWickiController(Controller):
         self.k_val = k_val
         self.b_val = b_val
         super().update_controller_gains(Kp=Kp, Ki=Ki, Kd=Kd, ff=ff)
-        self.ankle_angles = deque(maxlen=5)  # looking for peak in pf
+        self.ankle_angles = deque(maxlen=3)  # looking for peak in pf
         self.ankle_angle_filter = filters.Butterworth(N=2, Wn=0.1)
 
     def command(self, reset=False):
@@ -77,7 +77,7 @@ class SawickiWickiController(Controller):
         if self.found_setpt is False:
             # TODO(maxshep) see if you want to change min val
             #finding the pf peak
-            if len(self.ankle_angles) == 5 and (self.ankle_angles[1] > self.ankle_angles[0] and
+            if len(self.ankle_angles) == 3 and (self.ankle_angles[1] > self.ankle_angles[0] and
                                                 self.ankle_angles[1] > self.ankle_angles[2]) and (
                     self.ankle_angles[0] > 5):
                 self.exo.data.gen_var2 = self.ankle_angles[1]
@@ -85,7 +85,7 @@ class SawickiWickiController(Controller):
                 self._update_setpoint(theta0=self.ankle_angles[1])
 
         if self.is_taught and self.found_setpt:
-            self.exo.update_gains(Kp=250, Ki=500, Kd=0, ff=110)  #Mod and test AMRO
+            self.exo.update_gains(Kp=20, Ki=200, Kd=0, ff=60)  #Mod and test AMRO
             # super().command_gains()
             # print('engaged..., desired k_val: ', self.k_val,
             #       'setpoint: ', self.ankle_angles[0])
@@ -268,7 +268,7 @@ class FourPointSplineController(GenericSplineController):
 class SmoothReelInController(Controller):
     def __init__(self,
                  exo: Exo,
-                 reel_in_mV: int = 1500,
+                 reel_in_mV: int = 1200,
                  slack_cutoff: float = 1500,
                  time_out: float = 0.3,
                  Kp: int = 30,  # 50  150
@@ -353,12 +353,13 @@ class SoftReelOutController(Controller):
                  Kd: int = 0,
                  ff: int = 0,
                  max_reel_out_time: float = 0.2,
-                 force_timer_to_complete: bool = False):
+                 force_timer_to_complete: bool = False,
+                 angle_condition: bool = False):
         '''This controller uses position control with low gains to reach the desired slack.'''
         self.exo = exo
         self.ankle_angles = deque(maxlen=3)  # looking for peak in pf
         self.ankle_angle_filter = filters.Butterworth(N=2, Wn=0.1)
-        
+        self.angle_condition = angle_condition
         super().update_controller_gains(Kp=Kp, Ki=Ki, Kd=Kd, ff=ff)
         self.desired_slack = desired_slack
         # set maximum time for controller
@@ -375,7 +376,11 @@ class SoftReelOutController(Controller):
 
     def check_completion_status(self):
         slack = self.exo.get_slack()
-        ontheup = len(self.ankle_angles) == 3 and (self.ankle_angles[1] > self.ankle_angles[0])
+        if self.angle_condition:
+            ontheup = len(self.ankle_angles) == 3 and (self.ankle_angles[1] > self.ankle_angles[0])
+        else:
+            ontheup = True
+            
         return (not self.force_timer_to_complete and
                 slack >= self.desired_slack-500 and ontheup) or self.delay_timer.check()
 
