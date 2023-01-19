@@ -4,6 +4,8 @@ config = config_util.ConfigurableConstants()
 config.MAX_ALLOWABLE_CURRENT = 25000  # mA
 config.DO_READ_SYNC = True
 config.TARGET_FREQ = 150 #Hz
+config.TASK = config_util.Task.WALKINGMLGAITPHASE
+
 
 ''' Here are the variables that are updatable in config, and their defaults:
 

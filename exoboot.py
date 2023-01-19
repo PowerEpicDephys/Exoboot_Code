@@ -194,7 +194,7 @@ class Exo():
                 self.sync = True
 
     def close(self):
-        self.update_gains()
+        self.update_gains(self, Kp=0, Ki=0, Kd=0, k_val=0, b_val=0, ff=0)
         self.command_current(desired_mA=0)
         time.sleep(0.1)
         self.command_controller_off()
