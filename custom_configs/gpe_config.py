@@ -14,7 +14,7 @@ config.SPLINE_BIAS = 3  # Nm
 # config.VARS_TO_PLOT = ['heel_fsr', 'toe_fsr']
 config.SWING_ONLY = True
 config.DO_INCLUDE_GEN_VARS = True
-config.TARGET_FREQ = 200
+config.TARGET_FREQ = 150
 config.DO_FILTER_GAIT_PHASE = True
 config.DO_READ_SYNC = True
 
