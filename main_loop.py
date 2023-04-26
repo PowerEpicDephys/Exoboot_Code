@@ -28,8 +28,6 @@ sync_detector = config_util.get_sync_detector(config)
 '''Connect to Exos, instantiate Exo objects.'''
 exo_list = exoboot.connect_to_exos(
     file_ID=file_ID, config=config, sync_detector=sync_detector)
-print('Battery Voltage: ', 0.001*exo_list[0].get_batt_voltage(), 'V')
-
 config_saver = config_util.ConfigSaver(
     file_ID=file_ID, config=config)  # Saves config updates
 
