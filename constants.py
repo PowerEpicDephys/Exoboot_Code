@@ -24,8 +24,8 @@ LEFT_ANKLE_ANGLE_OFFSET = -89.25  # deg
 RIGHT_ANKLE_ANGLE_OFFSET = 91.5  # deg
 
 # Add to these lists if dev_ids change, or new exos or actpacks are purchased!
-RIGHT_EXO_DEV_IDS = [65295, 3148, 4648]
-LEFT_EXO_DEV_IDS = [63086, 2873, 4632]
+RIGHT_EXO_DEV_IDS = [65295, 3148, 4648, 4628]
+LEFT_EXO_DEV_IDS = [63086, 2873, 4632, 4507, 4693]
 
 MS_TO_SECONDS = 0.001
 # Converts raw Dephy encoder output to degrees

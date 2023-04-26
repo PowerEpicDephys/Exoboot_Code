@@ -42,7 +42,7 @@ class ConfigurableConstants():
     LEFT_STANDING_ANGLE: float = None  # Deg
     RIGHT_STANDING_ANGLE: float = None  # Deg
 
-    TARGET_FREQ: float = 175  # Hz
+    TARGET_FREQ: float = 150  # Hz
     ACTPACK_FREQ: float = 200  # Hz
     DO_DEPHY_LOG: bool = False
     DEPHY_LOG_LEVEL: int = 4

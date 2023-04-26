@@ -44,7 +44,7 @@ def connect_to_exos(file_ID: str,
     exo_list = []
     for port in ports:
         try:
-            dev_id = fxs.open(port, baud_rate, log_level=2)
+            dev_id = fxs.open(port, baud_rate, log_level=5)
             fxs.start_streaming(
                 dev_id=dev_id, freq=config.ACTPACK_FREQ, log_en=config.DO_DEPHY_LOG)
             exo_list.append(Exo(dev_id=dev_id, file_ID=file_ID,
